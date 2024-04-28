@@ -149,7 +149,24 @@ func Login() gin.HandlerFunc {
 }
 
 func ProductViewerAdmin() gin.HandlerFunc {
-	return func(c *gin.Context) {}
+	return func(c *gin.Context) {
+		var product models.Product
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+		if err := c.BindJSON(&product); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		product.Product_ID = primitive.NewObjectID()
+		_, err := ProductCollection.InsertOne(ctx, product)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "could not inserted"})
+			return
+		}
+
+		c.JSON(http.StatusCreated, "succesfully created")
+	}
 
 }
 

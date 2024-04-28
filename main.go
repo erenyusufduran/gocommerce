@@ -7,6 +7,7 @@ import (
 	"github.com/erenyusufduran/gocommerce/controllers"
 	"github.com/erenyusufduran/gocommerce/database"
 	"github.com/erenyusufduran/gocommerce/middlewares"
+	"github.com/erenyusufduran/gocommerce/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +22,7 @@ func main() {
 	router := gin.New()
 	router.Use(gin.Logger())
 
-	router.UserRoutes(router)
+	routes.UserRoutes(router)
 	router.Use(middlewares.Authentication())
 
 	router.GET("/addtocart", app.AddToCart())
