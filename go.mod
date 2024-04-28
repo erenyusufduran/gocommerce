@@ -1,4 +1,4 @@
-module github.com/erenyusufduran/golang-ecommerce
+module github.com/erenyusufduran/gocommerce
 
 go 1.22.1
 

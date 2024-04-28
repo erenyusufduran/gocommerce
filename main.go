@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/erenyusufduran/golang-ecommerce/controllers"
-	"github.com/erenyusufduran/golang-ecommerce/database"
-	"github.com/erenyusufduran/golang-ecommerce/middleware"
+	"github.com/erenyusufduran/gocommerce/controllers"
+	"github.com/erenyusufduran/gocommerce/database"
+	"github.com/erenyusufduran/gocommerce/middleware"
 	"github.com/gin-gonic/gin"
 )
 
