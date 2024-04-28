@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/erenyusufduran/golang-ecommerce/controllers"
+	"github.com/erenyusufduran/gocommerce/controllers"
 	"github.com/gin-gonic/gin"
 )
 

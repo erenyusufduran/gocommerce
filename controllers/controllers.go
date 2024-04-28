@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/erenyusufduran/gocommerce/database"
+	"github.com/erenyusufduran/gocommerce/tokens"
 
 	"github.com/erenyusufduran/gocommerce/models"
 	"github.com/gin-gonic/gin"
@@ -91,7 +92,11 @@ func Signup() gin.HandlerFunc {
 		user.ID = primitive.NewObjectID()
 		user.User_ID = user.ID.Hex()
 
-		token, refreshToken := generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
+		token, refreshToken, err := tokens.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "there is an error when token generation"})
+			return
+		}
 		user.Token = &token
 		user.Refresh_Token = &refreshToken
 		user.UserCart = make([]models.ProductUser, 0)
@@ -119,6 +124,7 @@ func Login() gin.HandlerFunc {
 			return
 		}
 
+		var foundUser models.User
 		err := UserCollection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&foundUser)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "login or password is incorrect"})
@@ -132,8 +138,12 @@ func Login() gin.HandlerFunc {
 			return
 		}
 
-		token, refreshToken := generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
-		generate.UpdateAllTokens(token, refreshToken, foundUser.User_ID)
+		token, refreshToken, err := tokens.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "there is an error when token generation"})
+			return
+		}
+		tokens.UpdateAllTokens(token, refreshToken, foundUser.User_ID)
 		c.JSON(http.StatusFound, foundUser)
 	}
 }
